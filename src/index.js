@@ -1,7 +1,7 @@
 
-import { bindCallback, from, generate, iif, Observable, Subject, of, range } from 'rxjs';
+import { bindCallback, from, generate, iif, Observable, Subject, of, range, interval } from 'rxjs';
 import { ajax } from 'rxjs/ajax';
-import { concatAll, filter, map, mergeMap, reduce, scan, take } from 'rxjs/operators';
+import { concatAll, filter, map, mergeMap, reduce, scan, take, switchMap } from 'rxjs/operators';
 import XMLHttpRequest from 'xhr2'
 global.XMLHttpRequest = XMLHttpRequest;
 
@@ -50,6 +50,15 @@ range(2, Number.MAX_SAFE_INTEGER).pipe(
     scan((acc, v) => ({ i: acc.i + 1, v }), { i: 0, v: 0 })
 ).subscribe(v => console.log('Prime#', v.i, '=', v.v));
 console.log('');
+
+of(100).pipe(
+    switchMap(v => interval(v)),
+    take(6),
+    reduce((acc, v) => acc + v)
+).subscribe({
+    next: v => console.log(`switchMap: ${v}`),
+    complete: () => console.log('')
+});
 
 ajax.getJSON('https://api.github.com/users?per_page=10')
     .pipe(
