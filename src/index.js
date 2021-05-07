@@ -13,10 +13,10 @@ const count = (from, to) => new Observable(subscriber => {
     subscriber.complete();
 });
 
-count(5, -1).subscribe(n => console.log(n));
+count(5, -1).subscribe(n => console.log(`count: ${n}`));
 console.log('');
 
-generate(10, n => n <= 20, n => n + 1).subscribe(n => console.log(n));
+generate(10, n => n <= 20, n => n + 1).subscribe(n => console.log(`generate: ${n}`));
 console.log('');
 
 from(['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'])
@@ -35,11 +35,10 @@ subject.subscribe(v => console.log('Subscription b', v));
 [1, 2, 3].forEach(v => subject.next(v));
 console.log('');
 
+// https://stackoverflow.com/questions/14650360/very-simple-prime-number-test-i-think-im-not-understanding-the-for-loop
 const isPrime = (n) => {
-    // fast even test.
     if (n > 2 && (n & 1) == 0)
         return false;
-    // only odd factors need to be tested up to n^0.5
     for (let i = 3; i * i <= n; i += 2)
         if (n % i == 0)
             return false;
