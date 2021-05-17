@@ -1,8 +1,7 @@
-
 import { bindCallback, from, generate, iif, Observable, Subject, of, range, interval } from 'rxjs';
 import { ajax } from 'rxjs/ajax';
 import { concatAll, filter, map, mergeMap, reduce, scan, take, switchMap } from 'rxjs/operators';
-import XMLHttpRequest from 'xhr2'
+import XMLHttpRequest from 'xhr2';
 global.XMLHttpRequest = XMLHttpRequest;
 
 const count = (from, to) => new Observable(subscriber => {
@@ -25,7 +24,7 @@ from(['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturda
         map(d => `Day: ${d}`))
     .subscribe({
         next: console.log,
-        complete: () => console.log('No days left')
+        complete: () => console.log('No days left'),
     });
 console.log('');
 
@@ -37,27 +36,31 @@ console.log('');
 
 // https://stackoverflow.com/questions/14650360/very-simple-prime-number-test-i-think-im-not-understanding-the-for-loop
 const isPrime = (n) => {
-    if (n > 2 && (n & 1) == 0)
+    if (n > 2 && (n & 1) === 0) {
         return false;
-    for (let i = 3; i * i <= n; i += 2)
-        if (n % i == 0)
+    }
+    for (let i = 3; i * i <= n; i += 2) {
+        if (n % i === 0) {
             return false;
+        }
+    }
     return true;
-}
+};
+
 range(2, Number.MAX_SAFE_INTEGER).pipe(
     filter(isPrime),
     take(20),
-    scan((acc, v) => ({ i: acc.i + 1, v }), { i: 0, v: 0 })
+    scan((acc, v) => ({ i: acc.i + 1, v }), { i: 0, v: 0 }),
 ).subscribe(v => console.log('Prime#', v.i, '=', v.v));
 console.log('');
 
 of(100).pipe(
     switchMap(v => interval(v)),
     take(6),
-    reduce((acc, v) => acc + v)
+    reduce((acc, v) => acc + v),
 ).subscribe({
     next: v => console.log(`switchMap: ${v}`),
-    complete: () => console.log('')
+    complete: () => console.log(''),
 });
 
 ajax.getJSON('https://api.github.com/users?per_page=10')
@@ -66,19 +69,17 @@ ajax.getJSON('https://api.github.com/users?per_page=10')
         map(v => `Name: ${v.login}, id: ${v.id}`))
     .subscribe({
         next: console.log,
-        complete: () => console.log('')
+        complete: () => console.log(''),
     });
 
 const multiplyByItselfWithCallback = (value, callback) => setTimeout(() => callback(value * value), 1000);
+const multiplyByItselfWithPromise = value => new Promise(resolve => setTimeout(() => resolve(value * value), 1000));
 from([0, 2, 3, undefined, undefined])
     .pipe(
         mergeMap(v => iif(() => (v === 0 || v), of(v), of(98, 99))),
         mergeMap(v => bindCallback(multiplyByItselfWithCallback)(v)),
-        mergeMap(v => bindCallback(multiplyByItselfWithCallback)(v))
-    )
-    .subscribe({
+        mergeMap(v => from(multiplyByItselfWithPromise(v))),
+    ).subscribe({
         next: console.log,
-        complete: () => console.log('')
+        complete: () => console.log(''),
     });
-
-

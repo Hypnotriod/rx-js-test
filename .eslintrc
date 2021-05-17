@@ -1,0 +1,18 @@
+{
+    "extends": "standard",
+    "env": {
+        "browser": true,
+        "node": true,
+        "es6": true
+    },
+    "parserOptions": {
+        "sourceType": "module"
+    },
+    "rules": {
+        "comma-dangle": [2, "always-multiline"],
+        "semi": ["error", "always"],
+        "indent": ["error", 4],
+        "space-before-function-paren": ["error", "never"],
+        "node/no-callback-literal": "off"
+    }
+}
