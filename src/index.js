@@ -1,6 +1,6 @@
-import { bindCallback, from, generate, iif, Observable, Subject, of, range, interval } from 'rxjs';
+import { bindCallback, from, generate, iif, Observable, Subject, of, range, interval, lastValueFrom } from 'rxjs';
 import { ajax } from 'rxjs/ajax';
-import { concatAll, filter, map, mergeMap, reduce, scan, take, switchMap } from 'rxjs/operators';
+import { concatAll, filter, map, mergeMap, reduce, scan, take, switchMap, delay, concatMap } from 'rxjs/operators';
 import XMLHttpRequest from 'xhr2';
 global.XMLHttpRequest = XMLHttpRequest;
 
@@ -83,3 +83,13 @@ from([0, 2, 3, undefined, undefined])
         next: console.log,
         complete: () => console.log(''),
     });
+
+async function asyncAction() {
+    const timeMs = 1000;
+    const stream$ = of(timeMs).pipe(
+        concatMap(t => of(t).pipe(delay(t))),
+    );
+    const value = await lastValueFrom(stream$);
+    console.log(`asyncAction after ${value} ms\n`);
+}
+asyncAction();
