@@ -69,12 +69,12 @@ ajax.getJSON('https://api.github.com/users?per_page=10')
         complete: () => console.log('')
     });
 
-const multiplyByItselfCallback = (value, callback) => setTimeout(() => callback(value * value), 1000);
+const multiplyByItselfWithCallback = (value, callback) => setTimeout(() => callback(value * value), 1000);
 from([0, 2, 3, undefined, undefined])
     .pipe(
         mergeMap(v => iif(() => (v === 0 || v), of(v), of(98, 99))),
-        mergeMap(v => bindCallback(multiplyByItselfCallback)(v)),
-        mergeMap(v => bindCallback(multiplyByItselfCallback)(v))
+        mergeMap(v => bindCallback(multiplyByItselfWithCallback)(v)),
+        mergeMap(v => bindCallback(multiplyByItselfWithCallback)(v))
     )
     .subscribe({
         next: console.log,
