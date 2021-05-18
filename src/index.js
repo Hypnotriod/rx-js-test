@@ -15,7 +15,12 @@ const count = (from, to) => new Observable(subscriber => {
 count(5, -1).subscribe(n => console.log(`count: ${n}`));
 console.log('');
 
-generate(10, n => n <= 20, n => n + 1).subscribe(n => console.log(`generate: ${n}`));
+// generate(10, n => n <= 20, n => n + 1).subscribe(n => console.log(`generate: ${n}`));
+generate({
+    initialState: 10,
+    condition: n => n < 20,
+    iterate: n => n + 1,
+}).subscribe(n => console.log(`generate: ${n}`));
 console.log('');
 
 from(['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'])
@@ -85,8 +90,7 @@ from([0, 2, 3, undefined, undefined])
     });
 
 async function asyncAction() {
-    const timeMs = 1000;
-    const stream$ = of(timeMs).pipe(
+    const stream$ = of(1000).pipe(
         concatMap(t => of(t).pipe(delay(t))),
     );
     const value = await lastValueFrom(stream$);
