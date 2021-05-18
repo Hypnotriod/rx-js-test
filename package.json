@@ -9,6 +9,7 @@
   "license": "ISC",
   "dependencies": {
     "rxjs": "^7.0.0",
+    "rxjs-for-await": "0.0.2",
     "xhr2": "^0.2.1"
   },
   "devDependencies": {

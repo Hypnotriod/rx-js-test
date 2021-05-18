@@ -1,6 +1,7 @@
-import { bindCallback, from, generate, iif, Observable, Subject, of, range, interval, lastValueFrom } from 'rxjs';
+import { bindCallback, from, generate, iif, Observable, Subject, of, range, interval } from 'rxjs';
 import { ajax } from 'rxjs/ajax';
 import { concatAll, filter, map, mergeMap, reduce, scan, take, switchMap, delay, concatMap } from 'rxjs/operators';
+import { eachValueFrom } from 'rxjs-for-await';
 import XMLHttpRequest from 'xhr2';
 global.XMLHttpRequest = XMLHttpRequest;
 
@@ -75,6 +76,7 @@ ajax.getJSON('https://api.github.com/users?per_page=10')
     .subscribe({
         next: console.log,
         complete: () => console.log(''),
+        error: e => console.log(`ajax.getJSON error: ${e}`),
     });
 
 const multiplyByItselfWithCallback = (value, callback) => setTimeout(() => callback(value * value), 1000);
@@ -90,10 +92,11 @@ from([0, 2, 3, undefined, undefined])
     });
 
 async function asyncAction() {
-    const stream$ = of(1000).pipe(
-        concatMap(t => of(t).pipe(delay(t))),
+    const stream$ = of(1000, 1200, 1300).pipe(
+        concatMap(t => of(t).pipe(delay(t))), // concatMap will emit values one by one
     );
-    const value = await lastValueFrom(stream$);
-    console.log(`asyncAction after ${value} ms\n`);
+    for await (const value of eachValueFrom(stream$)) {
+        console.log(`asyncAction after ${value} ms\n`);
+    }
 }
 asyncAction();
